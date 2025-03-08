@@ -61,11 +61,7 @@
       filterIn.create('feTurbulence').set(turbulenceParams);
       filterIn.create('feDisplacementMap').set(displacementParams);
 
-      const g = svg.create('g').set({
-        filter: 'url(#distortion)',
-      });
-
-      function createBranch(branchParams, levels = 1, svgGroup) {
+      function createBranch(branchParams, branchLevels, svgGroup, branches) {
         const {
           startPoint,
           length,
@@ -77,7 +73,7 @@
           widthReductionRate,
         } = branchParams;
         svgGroup.rotate(rotation, startPoint.x, startPoint.y);
-        svgGroup.create('line').set({
+        const svgElement = svgGroup.create('line').set({
           x1: startPoint.x,
           y1: startPoint.y,
           x2: startPoint.x,
@@ -85,9 +81,18 @@
           fill: 'none',
           stroke: '#fff',
           stroke_width: width,
+          className: branchLevels,
           //filter: 'url(#distortion)',
+          style: `stroke-dashArray: ${length} ${length}; stroke-dashOffset: ${length}`,
         });
-        if (levels > 1) {
+        branches.push({
+          level: branchLevels,
+          offset: length,
+          updatedOffset: length,
+          className: branchLevels,
+          svgElement,
+        });
+        if (branchLevels > 1) {
           for (let i = 1; i < segments; i++) {
             const deltaRotation = Gen.random(
               -rotation * 0.1,
@@ -111,27 +116,73 @@
                 width: width * (1 - widthReductionRate),
                 widthReductionRate,
               },
-              levels - 1,
+              branchLevels - 1,
               svgGroup.create('g'),
+              branches,
             );
           }
         }
       }
 
-      const branchParams = {
-        startPoint: { x: 0, y: 0 },
-        length: viewBoxHeight,
-        angle: 0,
-        rotation: 25,
-        segments: 5,
-        subBranchesLength: 0.4,
-        width: 6,
-        widthReductionRate: 0.4,
-      };
-      const startLevels = 4;
-      createBranch(branchParams, startLevels, g);
+      function createBolt(positionX, branchParams, boltLevels) {
+        const rootGroup = svg.create('g').set({
+          filter: 'url(#distortion)',
+        });
+        let branches = [];
 
-      g.set({ transform: `translate(${viewBoxWidth / 2} 0)` });
+        createBranch(branchParams, boltLevels, rootGroup, branches);
+
+        // Re-positions the bolt
+        rootGroup.set({ transform: `translate(${positionX} 0)` });
+
+        function animate(timestamp) {
+          for (let i = boltLevels; i > 0; i--) {
+            branches = branches.map((br) => {
+              let newBr = { ...br };
+              if (br.level === i) {
+                const { offset, updatedOffset } = br;
+                if (updatedOffset > 0) {
+                  const newUpdatedOffset = updatedOffset - offset / 10;
+                  br.svgElement.set({
+                    style: `stroke-dashArray: ${offset} ${offset}; stroke-dashOffset: ${newUpdatedOffset}`,
+                  });
+                  newBr.updatedOffset = newUpdatedOffset;
+                } else {
+                  newBr.svgElement?.delete();
+                  newBr.svgElement = null;
+                }
+              }
+              return newBr;
+            });
+          }
+          if (branches.every((br) => br.svgElement === null)) {
+            rootGroup.delete();
+          }
+          requestAnimationFrame(animate);
+        }
+
+        animate();
+      }
+      let svgDom = document.getElementById('svgBox');
+      svg.addEventListener('pointerdown', (e) => {
+        let endPoint = new DOMPoint();
+        endPoint.x = e.clientX;
+        endPoint.y = e.clientY;
+        endPoint = endPoint.matrixTransform(svgDom.getScreenCTM().inverse());
+
+        const branchParams = {
+          startPoint: { x: 0, y: 0 },
+          length: viewBoxHeight,
+          angle: 0,
+          rotation: Gen.random(20, 30),
+          segments: Gen.random(3, 6),
+          subBranchesLength: Gen.random(0.4, 0.6),
+          width: 6,
+          widthReductionRate: 0.4,
+        };
+
+        createBolt(endPoint.x, branchParams, 3);
+      });
     </script>
   </body>
 </html>
