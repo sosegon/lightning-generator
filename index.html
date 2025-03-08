@@ -61,7 +61,22 @@
       filterIn.create('feTurbulence').set(turbulenceParams);
       filterIn.create('feDisplacementMap').set(displacementParams);
 
-      function createBranch(branchParams, branchLevels, svgGroup, branches) {
+      // Filter in the outter part of the bolt
+      const filterOut = svg.createFilter('blur');
+      filterOut.create('feTurbulence').set(turbulenceParams);
+      filterOut.create('feDisplacementMap').set(displacementParams);
+      filterOut.create('feGaussianBlur').set({
+        in: 'ray',
+        stdDeviation: 10,
+      });
+
+      function createBranch(
+        branchParams,
+        branchLevels,
+        svgGroup,
+        svgGlowGroup,
+        branches,
+      ) {
         const {
           startPoint,
           length,
@@ -73,16 +88,32 @@
           widthReductionRate,
         } = branchParams;
         svgGroup.rotate(rotation, startPoint.x, startPoint.y);
-        const svgElement = svgGroup.create('line').set({
+        svgGlowGroup.rotate(rotation, startPoint.x, startPoint.y);
+        const branchAttrs = {
           x1: startPoint.x,
           y1: startPoint.y,
           x2: startPoint.x,
           y2: startPoint.y + length,
           fill: 'none',
-          stroke: '#fff',
-          stroke_width: width,
           className: branchLevels,
-          //filter: 'url(#distortion)',
+        };
+        const svgGlowElement = svgGlowGroup.create('line').set({
+          ...branchAttrs,
+          stroke_width: 3 * width,
+          stroke: 'blue',
+          style: `stroke-dashArray: ${length} ${length}; stroke-dashOffset: ${length}`,
+        });
+        branches.push({
+          level: branchLevels,
+          offset: length,
+          updatedOffset: length,
+          className: branchLevels,
+          svgElement: svgGlowElement,
+        });
+        const svgElement = svgGroup.create('line').set({
+          ...branchAttrs,
+          stroke_width: width,
+          stroke: '#fff',
           style: `stroke-dashArray: ${length} ${length}; stroke-dashOffset: ${length}`,
         });
         branches.push({
@@ -118,6 +149,7 @@
               },
               branchLevels - 1,
               svgGroup.create('g'),
+              svgGlowGroup.create('g'),
               branches,
             );
           }
@@ -125,15 +157,26 @@
       }
 
       function createBolt(positionX, branchParams, boltLevels) {
+        const rootGlowGroup = svg.create('g').set({
+          filter: 'url(#blur)',
+        });
         const rootGroup = svg.create('g').set({
           filter: 'url(#distortion)',
         });
+
         let branches = [];
 
-        createBranch(branchParams, boltLevels, rootGroup, branches);
+        createBranch(
+          branchParams,
+          boltLevels,
+          rootGroup,
+          rootGlowGroup,
+          branches,
+        );
 
         // Re-positions the bolt
         rootGroup.set({ transform: `translate(${positionX} 0)` });
+        rootGlowGroup.set({ transform: `translate(${positionX} 0)` });
 
         function animate(timestamp) {
           for (let i = boltLevels; i > 0; i--) {
@@ -142,7 +185,7 @@
               if (br.level === i) {
                 const { offset, updatedOffset } = br;
                 if (updatedOffset > 0) {
-                  const newUpdatedOffset = updatedOffset - offset / 10;
+                  const newUpdatedOffset = updatedOffset - offset / 7;
                   br.svgElement.set({
                     style: `stroke-dashArray: ${offset} ${offset}; stroke-dashOffset: ${newUpdatedOffset}`,
                   });
@@ -157,6 +200,7 @@
           }
           if (branches.every((br) => br.svgElement === null)) {
             rootGroup.delete();
+            rootGlowGroup.delete();
           }
           requestAnimationFrame(animate);
         }
