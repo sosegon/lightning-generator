@@ -1,0 +1,137 @@
+<html lang="'en">
+  <head>
+    <style>
+      body {
+        margin: 0;
+      }
+      #container {
+        margin: auto;
+        width: fit-content;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script type="module" lang="ts">
+      import {
+        SvJs,
+        Gen,
+        Noise,
+      } from 'https://cdn.jsdelivr.net/npm/svjs@1.0.2/+esm';
+
+      // Boilerplate
+      const svg = new SvJs().addTo(document.getElementById('container'));
+      const svgSize = Math.min(window.innerHeight, window.innerWidth);
+      const { innerHeight: viewBoxHeight, innerWidth: viewBoxWidth } = window;
+      svg.set({
+        x: 0,
+        y: 0,
+        width: viewBoxWidth,
+        height: viewBoxHeight,
+        viewBox: `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+        id: 'svgBox',
+      });
+
+      // Background
+      svg.create('rect').set({
+        x: 0,
+        y: 0,
+        width: viewBoxWidth,
+        height: viewBoxHeight,
+        fill: '#000',
+      });
+
+      // Filters
+      const turbulenceParams = {
+        baseFrequency: 0.005,
+        numOctaves: 5,
+        stitchTiles: 'stitch',
+        type: 'fractalNoise',
+        result: 'noise',
+      };
+      const displacementParams = {
+        in: 'SourceGraphic',
+        in2: 'noise',
+        scale: 150,
+        result: 'ray',
+      };
+
+      // Filter in the inner part of the bolt
+      const filterIn = svg.createFilter('distortion');
+      filterIn.create('feTurbulence').set(turbulenceParams);
+      filterIn.create('feDisplacementMap').set(displacementParams);
+
+      const g = svg.create('g').set({
+        filter: 'url(#distortion)',
+      });
+
+      function createBranch(branchParams, levels = 1, svgGroup) {
+        const {
+          startPoint,
+          length,
+          angle,
+          rotation,
+          segments,
+          subBranchesLength,
+          width,
+          widthReductionRate,
+        } = branchParams;
+        svgGroup.rotate(rotation, startPoint.x, startPoint.y);
+        svgGroup.create('line').set({
+          x1: startPoint.x,
+          y1: startPoint.y,
+          x2: startPoint.x,
+          y2: startPoint.y + length,
+          fill: 'none',
+          stroke: '#fff',
+          stroke_width: width,
+          //filter: 'url(#distortion)',
+        });
+        if (levels > 1) {
+          for (let i = 1; i < segments; i++) {
+            const deltaRotation = Gen.random(
+              -rotation * 0.1,
+              rotation * 0.1,
+              true,
+            );
+            createBranch(
+              {
+                startPoint: {
+                  x: startPoint.x,
+                  y: startPoint.y + (length / segments) * i,
+                },
+                length: length * subBranchesLength,
+                angle: angle,
+                rotation:
+                  i % 2 === 0
+                    ? angle + (rotation + deltaRotation)
+                    : angle - (rotation + deltaRotation),
+                segments: segments,
+                subBranchesLength: subBranchesLength,
+                width: width * (1 - widthReductionRate),
+                widthReductionRate,
+              },
+              levels - 1,
+              svgGroup.create('g'),
+            );
+          }
+        }
+      }
+
+      const branchParams = {
+        startPoint: { x: 0, y: 0 },
+        length: viewBoxHeight,
+        angle: 0,
+        rotation: 25,
+        segments: 5,
+        subBranchesLength: 0.4,
+        width: 6,
+        widthReductionRate: 0.4,
+      };
+      const startLevels = 4;
+      createBranch(branchParams, startLevels, g);
+
+      g.set({ transform: `translate(${viewBoxWidth / 2} 0)` });
+    </script>
+  </body>
+</html>
