@@ -58,12 +58,16 @@
 
       // Filter in the inner part of the bolt
       const filterIn = svg.createFilter('distortion');
-      filterIn.create('feTurbulence').set(turbulenceParams);
+      filterIn
+        .create('feTurbulence')
+        .set({ ...turbulenceParams, id: 'turbulence-distortion' });
       filterIn.create('feDisplacementMap').set(displacementParams);
 
       // Filter in the outter part of the bolt
       const filterOut = svg.createFilter('blur');
-      filterOut.create('feTurbulence').set(turbulenceParams);
+      filterOut
+        .create('feTurbulence')
+        .set({ ...turbulenceParams, id: 'turbulence-blur' });
       filterOut.create('feDisplacementMap').set(displacementParams);
       filterOut.create('feGaussianBlur').set({
         in: 'ray',
@@ -209,6 +213,15 @@
       }
       let svgDom = document.getElementById('svgBox');
       svg.addEventListener('pointerdown', (e) => {
+        // Update turbulence filter
+        const seed = Gen.random(10, 20);
+        const feNodeDistortion = document.getElementById(
+          'turbulence-distortion',
+        );
+        feNodeDistortion.setAttribute('seed', seed);
+        const feNodeBlur = document.getElementById('turbulence-blur');
+        feNodeBlur.setAttribute('seed', seed);
+
         let endPoint = new DOMPoint();
         endPoint.x = e.clientX;
         endPoint.y = e.clientY;
