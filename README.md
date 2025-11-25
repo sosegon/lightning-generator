@@ -1,6 +1,6 @@
 ### LIGHTNING GENERATOR
 
-This is a project to generate lightning bolts procedurally. The purpose of the project is to explore options to generate lightning with simple mathematical rules and svg filters.
+This is a project to generate lightning bolts procedurally. The purpose of the project is to explore options to generate lightning with simple mathematical rules and svg filters. You can see it live [here](http://se-vel.com/lightning-generator/).
 
 ![](images/lightning-bolt.gif)
 
