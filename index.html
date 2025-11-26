@@ -75,7 +75,7 @@
         BACKGROUND: '#000000',
         GLOW: '#4444ff',
         BOLT: '#ffffff',
-      }
+      };
 
       // Background
       svg.create('rect').set({
@@ -275,6 +275,7 @@
           if (branches.every((br) => br.svgElement === null)) {
             rootGroup.delete();
             rootGlowGroup.delete();
+            return;
           }
           requestAnimationFrame(animate);
         }
@@ -321,6 +322,7 @@
             } else {
               radialGradient.delete();
               lightCanvas.delete();
+              return;
             }
           }
           requestAnimationFrame(animateLight);
