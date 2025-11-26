@@ -252,7 +252,7 @@
         rootGroup.set({ transform: `translate(${positionX} 0)` });
         rootGlowGroup.set({ transform: `translate(${positionX} 0)` });
 
-        function animate(timestamp) {
+        function animate() {
           for (let i = boltLevels; i > 0; i--) {
             branches = branches.map((br) => {
               let newBr = { ...br };
@@ -311,7 +311,7 @@
           fill: 'url(#skyGradient)',
         });
 
-        function animateLight(timestamp) {
+        function animateLight() {
           if (lightCanvas) {
             let currentOpacity = parseFloat(
               lightCanvas.get('fill-opacity') || '0.6',
