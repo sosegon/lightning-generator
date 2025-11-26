@@ -48,7 +48,7 @@ Finally, we add a radial gradient at the top of the lightning bolt to light the 
 
 Due to the direction of some branches and the nature of the svg filter applied to them, the distortion is not enough to get that semi-chaotic feel in every branch (some of them look too straight). However, this effect is reduced with the speed of the animation.
 
-Since the lightning bolt has to be rendered from top to down, some branches may appear disconnedted from their parent.
+Since the lightning bolt has to be rendered from top to down, some branches may appear disconnected from their parent.
 
 ### Future work (TODO)
 
