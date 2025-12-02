@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, getContext } from 'svelte';
 	let container: HTMLDivElement;
 	let svjsLoaded = false;
 	let SvJs: any, Gen: any;
 
-	export let onClickCallback: (e: PointerEvent) => void;
-	export let onMouseLeaveCallback: (e: PointerEvent) => void;
+	let showInstructions = getContext('canvas').showInstructions;
+	let hideInstructions = getContext('canvas').hideInstructions;
 
 	onMount(async () => {
 		// Dynamically import svjs from CDN
@@ -272,13 +272,13 @@
 
 		let svgDom = document.getElementById('svgBox');
 		svg.addEventListener('mouseleave', (e: PointerEvent) => {
-			if (typeof onMouseLeaveCallback === 'function') {
-				onMouseLeaveCallback(e);
+			if (typeof showInstructions === 'function') {
+				showInstructions();
 			}
 		});
 		svg.addEventListener('pointerdown', (e: PointerEvent) => {
-			if (typeof onClickCallback === 'function') {
-				onClickCallback(e);
+			if (typeof hideInstructions === 'function') {
+				hideInstructions();
 			}
 			// Update turbulence filter to get different patterns
 			const seed = Gen.random(10, 20);
