@@ -4,6 +4,9 @@
 	let svjsLoaded = false;
 	let SvJs: any, Gen: any;
 
+	export let onClickCallback: (e: PointerEvent) => void;
+	export let onMouseLeaveCallback: (e: PointerEvent) => void;
+
 	onMount(async () => {
 		// Dynamically import svjs from CDN
 		const svjs = await import('https://cdn.jsdelivr.net/npm/svjs@1.0.2/+esm');
@@ -268,7 +271,15 @@
 		}
 
 		let svgDom = document.getElementById('svgBox');
-		svg.addEventListener('pointerdown', (e) => {
+		svg.addEventListener('mouseleave', (e: PointerEvent) => {
+			if (typeof onMouseLeaveCallback === 'function') {
+				onMouseLeaveCallback(e);
+			}
+		});
+		svg.addEventListener('pointerdown', (e: PointerEvent) => {
+			if (typeof onClickCallback === 'function') {
+				onClickCallback(e);
+			}
 			// Update turbulence filter to get different patterns
 			const seed = Gen.random(10, 20);
 			const feNodeDistortion = document.getElementById('turbulence-distortion');
@@ -298,4 +309,4 @@
 	}
 </script>
 
-<div id="container" bind:this={container} style="margin:auto;width:fit-content;"></div>
+<div id="container" bind:this={container}></div>
