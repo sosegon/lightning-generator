@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { AppStateType } from './AppState.svelte';
 	import { onMount, getContext } from 'svelte';
+	import type { AppStateType } from './AppState.svelte';
 	let container: HTMLDivElement;
 	let svjsLoaded = false;
 	let SvJs: any, Gen: any;
@@ -276,8 +276,14 @@
 		});
 		svg.addEventListener('pointerdown', (e: PointerEvent) => {
 			appState.setShowInstructions(false);
+			if( !appState.isMuted ) {
+				// Play lightning sound
+				const audio = new Audio('/sound/lightning-strike.mp3');
+				audio.volume = 0.1;
+				audio.currentTime = 0;
+				audio.play();
+			} 
 
-			// renderInstructions = false;
 			// Update turbulence filter to get different patterns
 			const seed = Gen.random(10, 20);
 			const feNodeDistortion = document.getElementById('turbulence-distortion');
