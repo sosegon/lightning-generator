@@ -3,24 +3,15 @@
 	import { fade } from 'svelte/transition';
 	import LightningGenerator from './LightningGenerator.svelte';
 	import BackgroundInstructions from './BackgroundInstructions.svelte';
+	import { AppState } from './AppState.svelte';
 
-	// Hide BackgroundInstructions after click
-	let renderInstructions = true;
-	function showInstructions() {
-		renderInstructions = true;
-	}
-	function hideInstructions() {
-		renderInstructions = false;
-	}
+	const appState = new AppState();
 
-	setContext('canvas', {
-		showInstructions,
-		hideInstructions
-	});
+	setContext('canvas', appState);
 </script>
 
 <LightningGenerator />
-{#if renderInstructions}
+{#if appState.showInstructions}
 	<div transition:fade>
 		<BackgroundInstructions />
 	</div>
