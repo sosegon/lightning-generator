@@ -5,6 +5,7 @@
 	import BackgroundInstructions from './BackgroundInstructions.svelte';
 	import ControlPanel from './ControlPanel.svelte';
 	import { AppState } from './AppState.svelte';
+	import InfoDialog from './InfoDialog.svelte';
 
 	const appState = new AppState();
 
@@ -17,4 +18,7 @@
 	<div transition:fade>
 		<BackgroundInstructions />
 	</div>
+{/if}
+{#if appState.showInfo}
+	<InfoDialog />
 {/if}
