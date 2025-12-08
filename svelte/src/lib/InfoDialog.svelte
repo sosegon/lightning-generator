@@ -10,7 +10,7 @@
 
 	let dialog: HTMLDialogElement; // Reference to the dialog tag
 	onMount(() => {
-		dialog = document.getElementById('confirmation-dialog') as HTMLDialogElement;
+		dialog = document.getElementById('info-dialog') as HTMLDialogElement;
 		dialog?.showModal();
 
 		const handleBackdropClick = (event: MouseEvent) => {
@@ -30,7 +30,7 @@
 	};
 </script>
 
-<dialog id="confirmation-dialog" 
+<dialog id="info-dialog" 
 	class="relative bg-slate-900/95 border border-slate-700 text-white backdrop-blur-sm max-w-md rounded-lg"
 >
 	<div class="absolute top-3 right-3">
