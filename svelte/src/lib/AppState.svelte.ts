@@ -1,6 +1,7 @@
 export class AppState {
 	showInstructions: boolean = $state(true);
 	isMuted: boolean = $state(false);
+	showInfo: boolean = $state(true);
 
 	setShowInstructions(value: boolean) {
 		this.showInstructions = value;
@@ -9,6 +10,10 @@ export class AppState {
 	setIsMuted(value: boolean) {
 		this.isMuted = value;
 	}
+
+	setShowInfo(value: boolean) {
+		this.showInfo = value;
+	}
 }
 
 export type AppStateType = {
@@ -16,4 +21,6 @@ export type AppStateType = {
 	setShowInstructions: (value: boolean) => void;
 	isMuted: boolean;
 	setIsMuted: (value: boolean) => void;
+	showInfo: boolean;
+	setShowInfo: (value: boolean) => void;
 };
