@@ -118,7 +118,6 @@
 				x2: startPoint.x,
 				y2: startPoint.y + length,
 				fill: 'none',
-				className: branchLevels
 			};
 			const svgGlowElement = svgGlowGroup.create('line').set({
 				...branchAttrs,
@@ -130,7 +129,6 @@
 				level: branchLevels,
 				offset: length,
 				updatedOffset: length,
-				className: branchLevels,
 				svgElement: svgGlowElement
 			});
 			const svgElement = svgGroup.create('line').set({
@@ -143,7 +141,6 @@
 				level: branchLevels,
 				offset: length,
 				updatedOffset: length,
-				className: branchLevels,
 				svgElement
 			});
 			if (branchLevels > 1) {
@@ -298,7 +295,10 @@
 			let endPoint = new DOMPoint();
 			endPoint.x = e.clientX;
 			endPoint.y = e.clientY;
-			endPoint = endPoint.matrixTransform(svg?.element.getScreenCTM().inverse());
+			const ctm = svg?.element.getScreenCTM();
+			if(ctm) {
+				endPoint = endPoint.matrixTransform(ctm.inverse());
+			}
 
 			const branchParams: BranchParams = {
 				startPoint: { x: 0, y: 0 },

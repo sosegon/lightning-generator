@@ -15,6 +15,5 @@ export type BranchDom = {
 	level: number;
 	offset: number;
 	updatedOffset: number;
-	className: number;
 	svgElement: SvJsType | null;
 };
