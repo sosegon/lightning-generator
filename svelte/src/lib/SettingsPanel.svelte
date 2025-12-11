@@ -11,23 +11,6 @@
 	let appState: AppStateType = getContext('canvas');
 	let lightningState: LightningStateType = getContext('lightning');
 
-	let dialog: HTMLDialogElement; // Reference to the dialog tag
-	onMount(() => {
-		dialog = document.getElementById('settings-dialog') as HTMLDialogElement;
-		dialog?.show();
-
-		const handleBackdropClick = (event: MouseEvent) => {
-			if (event.target === dialog) {
-				closeClick();
-			}
-		};
-		dialog?.addEventListener('click', handleBackdropClick);
-
-		return () => {
-			dialog?.removeEventListener('click', handleBackdropClick);
-		};
-	});
-
 	const closeClick = () => {
 		appState.setShowSettings(false);
 	};

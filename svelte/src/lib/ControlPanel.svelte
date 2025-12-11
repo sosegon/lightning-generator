@@ -40,6 +40,6 @@
 		</Button>
 	</div>
 	{#if appState.showSettings}
-		<SettingsPanel class_="top-10 right-2 z-[1000]" />
+		<SettingsPanel class_="z-[1000]" />
 	{/if}
 </div>
