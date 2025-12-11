@@ -32,7 +32,8 @@
 
 <dialog
 	id="info-dialog"
-	class="relative bg-slate-900/95 border border-slate-700 text-white backdrop-blur-sm max-w-md rounded-lg"
+	class="relative bg-slate-900/95 border border-slate-700 text-white \
+	backdrop-blur-sm rounded-lg"
 >
 	<div class="absolute top-3 right-3">
 		<button on:click={closeClick} class="cursor-pointer">
@@ -45,7 +46,9 @@
 			<Zap class="size-5 text-blue-400" />
 			<h2>Lightning Generator</h2>
 		</div>
-		<p class="text-sm text-slate-300">Create stunning lightning effects with a single click</p>
+		<p class="text-sm text-slate-300 text-left">
+			Create stunning lightning effects with a single click
+		</p>
 	</div>
 	<!-- body -->
 	<div class="space-y-4 py-4">
@@ -84,6 +87,8 @@
 	dialog {
 		padding: 24px;
 		position: absolute;
+		width: 90%;
+		max-width: 400px;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
