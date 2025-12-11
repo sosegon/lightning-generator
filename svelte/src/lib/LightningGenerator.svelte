@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
 	import type { AppStateType } from './AppState.svelte';
+	import type { LightningStateType } from './LightningState.svelte';
 	let container: HTMLDivElement;
 	let svjsLoaded = false;
 	let SvJs: any, Gen: any;
 
 	let appState: AppStateType = getContext('canvas');
+	let lightningState: LightningStateType = getContext('lightning');
 
 	onMount(async () => {
 		// Dynamically import svjs from CDN
@@ -34,7 +36,6 @@
 		// Colors
 		const COLORS = {
 			BACKGROUND: '#000000',
-			GLOW: '#4444ff',
 			BOLT: '#ffffff'
 		};
 
@@ -119,7 +120,7 @@
 			const svgGlowElement = svgGlowGroup.create('line').set({
 				...branchAttrs,
 				stroke_width: 3 * width,
-				stroke: COLORS.GLOW,
+				stroke: lightningState.color,
 				style: `stroke-dashArray: ${length} ${length}; stroke-dashOffset: ${length}`
 			});
 			branches.push({
@@ -238,10 +239,10 @@
 			});
 			radialGradient
 				.create('stop')
-				.set({ offset: '10%', 'stop-color': COLORS.GLOW, 'stop-opacity': 0.4 });
+				.set({ offset: '10%', 'stop-color': lightningState.color, 'stop-opacity': 0.4 });
 			radialGradient
 				.create('stop')
-				.set({ offset: '50%', 'stop-color': COLORS.GLOW, 'stop-opacity': 0.05 });
+				.set({ offset: '50%', 'stop-color': lightningState.color, 'stop-opacity': 0.05 });
 			// Create a rectangle with the gradient fill
 			const lightCanvas = svg.create('rect');
 			lightCanvas.set({
@@ -276,13 +277,13 @@
 		});
 		svg.addEventListener('pointerdown', (e: PointerEvent) => {
 			appState.setShowInstructions(false);
-			if( !appState.isMuted ) {
+			if (!appState.isMuted) {
 				// Play lightning sound
 				const audio = new Audio('/sound/lightning-strike.mp3');
 				audio.volume = 0.1;
 				audio.currentTime = 0;
 				audio.play();
-			} 
+			}
 
 			// Update turbulence filter to get different patterns
 			const seed = Gen.random(10, 20);

@@ -5,11 +5,14 @@
 	import BackgroundInstructions from './BackgroundInstructions.svelte';
 	import ControlPanel from './ControlPanel.svelte';
 	import { AppState } from './AppState.svelte';
+	import { LightningState } from './LightningState.svelte';
 	import InfoDialog from './InfoDialog.svelte';
 
 	const appState = new AppState();
-
 	setContext('canvas', appState);
+
+	const lightningState = new LightningState();
+	setContext('lightning', lightningState);
 </script>
 
 <LightningGenerator />
