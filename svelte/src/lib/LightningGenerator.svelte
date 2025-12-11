@@ -1,28 +1,33 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
+	import type { BranchParams, BranchDom } from '@types';
+	import { SvJs, Gen } from 'svjs/src';
+	import type { SvJs as SvJsType } from 'svjs';
 	import type { AppStateType } from './AppState.svelte';
 	import type { LightningStateType } from './LightningState.svelte';
 	let container: HTMLDivElement;
-	let svjsLoaded = false;
-	let SvJs: any, Gen: any;
 
 	let appState: AppStateType = getContext('canvas');
 	let lightningState: LightningStateType = getContext('lightning');
 
-	onMount(async () => {
-		// Dynamically import svjs from CDN
-		const svjs = await import('https://cdn.jsdelivr.net/npm/svjs@1.0.2/+esm');
-		SvJs = svjs.SvJs;
-		Gen = svjs.Gen;
-		svjsLoaded = true;
+	onMount(() => {
 		initLightning();
+		const handleResize = () => {
+			if (container) {
+				container.innerHTML = '';
+				initLightning();
+			}
+		};
+		window.addEventListener('resize', handleResize);
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
 	});
 
 	function initLightning() {
 		if (!container || !SvJs) return;
 		// Boilerplate
-		const svg = new SvJs().addTo(document.getElementById('container'));
-		const svgSize = Math.min(window.innerHeight, window.innerWidth);
+		const svg = new SvJs().addTo(container);
 		const { innerHeight: viewBoxHeight, innerWidth: viewBoxWidth } = window;
 		svg.set({
 			x: 0,
@@ -82,21 +87,19 @@
 
 		/* Creates a branch and its sub-branches recursively
 		 * Params:
-		 *  branchParams: Object containing parameters for the branch:
-		 *    startPoint: {x, y} - starting point of the branch
-		 *    length: number - length of the branch
-		 *    angle: number - angle of the branch to tilt it
-		 *    rotation: number - rotation of the branch
-		 *    segments: number - number of segments in the branch
-		 *    subBranchesLength: number - length of the sub-branches relative to the branch
-		 *    width: number - width of the branch
-		 *    widthReductionRate: number - rate at which the width reduces for sub-branches
+		 *  branchParams: BranchParams containing parameters for the branch
 		 *  branchLevels: number - current level of the branch
-		 *  svgGroup: SvJs element - SVG group to add the branch lines
-		 *  svgGlowGroup: SvJs element - SVG group to add the glow lines
-		 *  branches: array - array to store branch data for animation
+		 *  svgGroup: SvJsType - SVG group to add the branch lines
+		 *  svgGlowGroup: SvJsType - SVG group to add the glow lines
+		 *  branches: BranchDom[] - array to store branch data for animation
 		 */
-		function createBranch(branchParams, branchLevels, svgGroup, svgGlowGroup, branches) {
+		function createBranch(
+			branchParams: BranchParams,
+			branchLevels: number,
+			svgGroup: SvJsType,
+			svgGlowGroup: SvJsType,
+			branches: BranchDom[]
+		) {
 			const {
 				startPoint,
 				length,
@@ -175,10 +178,10 @@
 		/* Creates a lightning bolt at a given position
 		 * Params:
 		 *  positionX: number - x position of the bolt
-		 *  branchParams: Object containing parameters for the main branch
+		 *  branchParams: BranchParams containing parameters for the main branch
 		 *  boltLevels: number - number of levels of branches in the bolt
 		 */
-		function createBolt(positionX, branchParams, boltLevels) {
+		function createBolt(positionX: number, branchParams: BranchParams, boltLevels: number) {
 			const rootGlowGroup = svg.create('g').set({
 				filter: 'url(#blur)'
 			});
@@ -186,7 +189,7 @@
 				filter: 'url(#distortion)'
 			});
 
-			let branches = [];
+			let branches: BranchDom[] = [];
 
 			createBranch(branchParams, boltLevels, rootGroup, rootGlowGroup, branches);
 
@@ -202,7 +205,7 @@
 							const { offset, updatedOffset } = br;
 							if (updatedOffset > 0) {
 								const newUpdatedOffset = updatedOffset - offset / 7;
-								br.svgElement.set({
+								br.svgElement?.set({
 									style: `stroke-dashArray: ${offset} ${offset}; stroke-dashOffset: ${newUpdatedOffset}`
 								});
 								newBr.updatedOffset = newUpdatedOffset;
@@ -229,7 +232,7 @@
 		 * Params:
 		 *  pointX: number - x position of the light effect
 		 */
-		function lightSky(pointX) {
+		function lightSky(pointX: number) {
 			// Create a radial gradient
 			const radialGradient = svg.create('radialGradient').set({
 				id: 'skyGradient',
@@ -271,10 +274,10 @@
 			animateLight();
 		}
 
-		let svgDom = document.getElementById('svgBox');
-		svg.addEventListener('mouseleave', (e: PointerEvent) => {
+		svg.addEventListener('mouseleave', () => {
 			appState.setShowInstructions(true);
 		});
+
 		svg.addEventListener('pointerdown', (e: PointerEvent) => {
 			appState.setShowInstructions(false);
 			if (!appState.isMuted) {
@@ -288,16 +291,16 @@
 			// Update turbulence filter to get different patterns
 			const seed = Gen.random(10, 20);
 			const feNodeDistortion = document.getElementById('turbulence-distortion');
-			feNodeDistortion.setAttribute('seed', seed);
+			feNodeDistortion?.setAttribute('seed', seed);
 			const feNodeBlur = document.getElementById('turbulence-blur');
-			feNodeBlur.setAttribute('seed', seed);
+			feNodeBlur?.setAttribute('seed', seed);
 
 			let endPoint = new DOMPoint();
 			endPoint.x = e.clientX;
 			endPoint.y = e.clientY;
-			endPoint = endPoint.matrixTransform(svgDom.getScreenCTM().inverse());
+			endPoint = endPoint.matrixTransform(svg?.element.getScreenCTM().inverse());
 
-			const branchParams = {
+			const branchParams: BranchParams = {
 				startPoint: { x: 0, y: 0 },
 				length: viewBoxHeight,
 				angle: 0,
