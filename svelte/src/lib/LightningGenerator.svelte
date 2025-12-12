@@ -165,8 +165,6 @@
 		}
 
 		// Animate for continuous scrolling
-		let evenX = 0;
-		let oddX = windowWidth;
 		const positionsX: Array<{ evenX: number; oddX: number }> = [];
 		for (let i = 0; i < mountainLayers.length; i++) {
 			positionsX.push({ evenX: 0, oddX: windowWidth });
@@ -178,21 +176,20 @@
 				const evenMountains = layer.evenMountains;
 				const oddMountains = layer.oddMountains;
 				const speed = mountainLayers[i].speed;
+				
 				positionsX[i].evenX -= speed;
 				positionsX[i].oddX -= speed;
-				evenX = positionsX[i].evenX;
-				oddX = positionsX[i].oddX;
 
 				// When a group moves out of view, jump it to the right of the other group
-				if (evenX <= -windowWidth) {
-					evenX = oddX + windowWidth;
+				if (positionsX[i].evenX <= -windowWidth) {
+					positionsX[i].evenX = positionsX[i].oddX + windowWidth;
 				}
-				if (oddX <= -windowWidth) {
-					oddX = evenX + windowWidth;
+				if (positionsX[i].oddX <= -windowWidth) {
+					positionsX[i].oddX = positionsX[i].evenX + windowWidth;
 				}
 
-				evenMountains?.set({ transform: `translate(${evenX},0)` });
-				oddMountains?.set({ transform: `translate(${oddX},0)` });
+				evenMountains?.set({ transform: `translate(${positionsX[i].evenX},0)` });
+				oddMountains?.set({ transform: `translate(${positionsX[i].oddX},0)` });
 			}
 			requestAnimationFrame(animateMountains);
 		}
