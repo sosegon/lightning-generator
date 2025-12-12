@@ -102,7 +102,7 @@
 			const mountainFiller = group.create('rect');
 			mountainFiller.set({
 				x: 0,
-				y: valleyYPosition * 1.01,
+				y: valleyYPosition * 1.01, // Going slightly below to avoid gaps due to application of filters
 				width: window.innerWidth,
 				height: vh - valleyYPosition,
 				fill: color
@@ -214,6 +214,7 @@
 		// Colors
 		const COLORS = {
 			BACKGROUND: '#000000',
+			BACKGROUND_GRADIENT_END: '#222244',
 			BOLT: '#ffffff'
 		};
 
@@ -232,7 +233,7 @@
 		});
 		bgGradient.create('stop').set({
 			offset: '50%',
-			'stop-color': '#222244', // lighter shade at the bottom
+			'stop-color': COLORS.BACKGROUND_GRADIENT_END, // lighter shade at the bottom
 			'stop-opacity': 1
 		});
 		svg.create('rect').set({
