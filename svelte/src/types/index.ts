@@ -20,7 +20,7 @@ export type BranchDom = {
 
 export type MountainParams = {
 	numberOfPeaks: number;
-	distanceBetweenPeaks: number;
+	distanceBetweenValleyPeak: number;
 	color: string;
 	valleyYPosition: number;
 	speed: number;

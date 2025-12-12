@@ -64,9 +64,9 @@
 		): SvJsType {
 			const points: Array<[number, number]> = [];
 
-			const { numberOfPeaks, valleyYPosition, distanceBetweenPeaks, color } = params;
+			const { numberOfPeaks, valleyYPosition, distanceBetweenValleyPeak, color } = params;
 
-			const dh = distanceBetweenPeaks; // vertical distance between peaks
+			const dh = distanceBetweenValleyPeak; // vertical distance between peaks
 			const vh = window.innerHeight;
 			const y2 = valleyYPosition; // valley y position
 			const y1 = y2 - dh; // peak y position
@@ -115,23 +115,23 @@
 		const mountainLayers: MountainParams[] = [
 			{
 				numberOfPeaks: 3,
-				distanceBetweenPeaks: 50,
+				distanceBetweenValleyPeak: 20,
 				color: '#0D0D2D',
 				valleyYPosition: windowHeight * 0.45,
 				speed: 0.01
 			}, // darkest, furthest
 			{
 				numberOfPeaks: 4,
-				distanceBetweenPeaks: 40,
+				distanceBetweenValleyPeak: 40,
 				color: '#1A1A38',
-				valleyYPosition: windowHeight * 0.55,
+				valleyYPosition: windowHeight * 0.45 + 25,
 				speed: 0.05
 			}, // mid
 			{
 				numberOfPeaks: 2,
-				distanceBetweenPeaks: 30,
+				distanceBetweenValleyPeak: 60,
 				color: '#262643',
-				valleyYPosition: windowHeight * 0.65,
+				valleyYPosition: windowHeight * 0.45 + 70,
 				speed: 0.1
 			} // closest, lightest
 		];
