@@ -17,3 +17,31 @@ export type BranchDom = {
 	updatedOffset: number;
 	svgElement: SvJsType | null;
 };
+
+export type MountainParams = {
+	numberOfPeaks: number;
+	distanceBetweenValleyPeak: number;
+	color: string;
+	valleyYPosition: number;
+	speed: number;
+};
+
+export type SvgMountain = {
+	oddMountains: SvJsType | null;
+	evenMountains: SvJsType | null;
+};
+
+export type TurbulenceParams = {
+	baseFrequency: number;
+	numOctaves: number;
+	stitchTiles: string;
+	type: string;
+	result: string;
+};
+
+export type DisplacementParams = {
+	in: string;
+	in2: string;
+	scale: number;
+	result: string;
+};
