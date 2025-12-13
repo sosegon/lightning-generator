@@ -26,7 +26,7 @@ export type MountainParams = {
 	speed: number;
 };
 
-export type SvgMountain = {
+export type MountainSvg = {
 	oddMountains: SvJsType | null;
 	evenMountains: SvJsType | null;
 };
