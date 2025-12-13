@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import LightningGenerator from './LightningGenerator.svelte';
-	import BackgroundInstructions from './BackgroundInstructions.svelte';
-	import ControlPanel from './ControlPanel.svelte';
-	import { AppState } from './AppState.svelte';
-	import { LightningState } from './LightningState.svelte';
-	import InfoDialog from './InfoDialog.svelte';
+	import LightningGenerator from 'Lib/LightningGenerator.svelte';
+	import BackgroundInstructions from 'Lib/BackgroundInstructions.svelte';
+	import ControlPanel from 'Lib/ControlPanel.svelte';
+	import { AppState } from 'Lib/AppState.svelte';
+	import { LightningState } from 'Lib/LightningState.svelte';
+	import InfoDialog from 'Lib/InfoDialog.svelte';
 
 	const appState = new AppState();
 	setContext('canvas', appState);
