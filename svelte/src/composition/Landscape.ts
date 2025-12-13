@@ -1,7 +1,10 @@
 import type { BranchParams } from '@types';
 import { SvJs, Gen } from 'svjs/src';
 import type { SvJs as SvJsType } from 'svjs';
-import { paintMountains, paintStars, paintSky, Bolt } from '@composition';
+import paintMountains from './paintMountains';
+import paintStars from './paintStars';
+import paintSky from './paintSky';
+import { Bolt } from './Bolt';
 
 export class Landscape {
 	private svg: SvJsType;

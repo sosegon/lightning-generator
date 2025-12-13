@@ -1,8 +1,8 @@
 import type { BranchDom } from '@root/types';
 import type { BranchParams } from '@types';
 import { Gen } from 'svjs/src';
-import { createDistortionFilter } from '@composition';
 import type { SvJs as SvJsType } from 'svjs';
+import createDistortionFilter from './createDistortionFilter';
 
 export class Bolt {
 	private svg: SvJsType;

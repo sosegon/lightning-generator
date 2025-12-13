@@ -1,5 +1,5 @@
-import type { TurbulenceParams, DisplacementParams } from '@types';
 import type { SvJs as SvJsType } from 'svjs';
+import type { TurbulenceParams, DisplacementParams } from '@types';
 
 export default function createDistortionFilter(
 	svg: SvJsType,
