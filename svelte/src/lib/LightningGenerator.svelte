@@ -7,7 +7,7 @@
 		SvgMountain,
 		TurbulenceParams,
 		DisplacementParams
-	} from 'Types';
+	} from '@types';
 	import { SvJs, Gen } from 'svjs/src';
 	import type { SvJs as SvJsType } from 'svjs';
 	import type { AppStateType } from './AppState.svelte';

@@ -18,8 +18,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@root/*": ["src/*"],
-			"Lib/*": ["src/lib/*"],
-			"Types/*": ["src/types/*"]
+			"@lib/*": ["src/lib/*"],
+			"@types/*": ["src/types/*"]
 		},
 		"composite": true
 	},

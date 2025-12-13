@@ -8,8 +8,8 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@root': path.resolve(__dirname, 'src'),
-			Lib: path.resolve(__dirname, 'src/lib'),
-			Types: path.resolve(__dirname, 'src/types')
+			'@lib': path.resolve(__dirname, 'src/lib'),
+			'@types': path.resolve(__dirname, 'src/types')
 		}
 	}
 });
