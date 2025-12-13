@@ -5,6 +5,7 @@ import path from 'path';
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [svelte()],
+	base: '/lightning-generator/',
 	resolve: {
 		alias: {
 			'@root': path.resolve(__dirname, 'src'),
