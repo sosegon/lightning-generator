@@ -1,9 +1,6 @@
-# Package Managers
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
-bun.lock
-bun.lockb
-
-# Miscellaneous
-/static/
+# Prettier ignore file
+# Add files and folders here to exclude them from formatting
+node_modules/
+build/
+dist/
+public/sound/

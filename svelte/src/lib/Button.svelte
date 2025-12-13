@@ -4,6 +4,6 @@
 	export let class_: string;
 </script>
 
-<button on:click={onClick} class={"cursor-pointer p-2 rounded-sm ".concat(class_)}>
+<button on:click={onClick} class={'cursor-pointer p-2 rounded-sm '.concat(class_)}>
 	<slot />
 </button>
