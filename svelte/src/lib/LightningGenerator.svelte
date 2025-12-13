@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
+	import { getPublicAssetPath } from './publicPath';
 	import type {
 		BranchParams,
 		BranchDom,
@@ -473,7 +474,7 @@
 			appState.setShowInstructions(false);
 			if (!appState.isMuted) {
 				// Play lightning sound
-				const audio = new Audio('/sound/lightning-strike.mp3');
+				const audio = new Audio(getPublicAssetPath('sound/lightning-strike.mp3'));
 				audio.volume = 0.1;
 				audio.currentTime = 0;
 				audio.play();
