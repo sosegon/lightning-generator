@@ -176,7 +176,7 @@
 				const evenMountains = layer.evenMountains;
 				const oddMountains = layer.oddMountains;
 				const speed = mountainLayers[i].speed;
-				
+
 				positionsX[i].evenX -= speed;
 				positionsX[i].oddX -= speed;
 
