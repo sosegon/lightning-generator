@@ -3,7 +3,6 @@ import type { BranchParams } from '@types';
 import { Gen } from 'svjs/src';
 import { createDistortionFilter } from '@composition';
 import type { SvJs as SvJsType } from 'svjs';
-import lightSky from './lightSky';
 
 export class Bolt {
 	private svg: SvJsType;
@@ -82,7 +81,7 @@ export class Bolt {
 
 		animate();
 
-		lightSky(this.svg, positionX, color, this.canvasDimensions);
+		this.paintSkyLight(positionX, color);
 	}
 
 	/* Creates a branch and its sub-branches recursively
@@ -213,5 +212,48 @@ export class Bolt {
 		feNodeDistortion?.setAttribute('seed', seed);
 		const feNodeBlur = document.getElementById(`turbulence-${this.rayOuterFilterName}`);
 		feNodeBlur?.setAttribute('seed', seed);
+	}
+
+	/* Creates a light effect on the sky at a given x position
+	 * Params:
+	 *  pointX: number - x position of the light effect
+	 *  color: string - color of the light effect
+	 */
+	private paintSkyLight(positionX: number, color: string): void {
+		// Create a radial gradient
+		const radialGradient = this.svg.create('radialGradient').set({
+			id: 'skyLightGradient',
+			cx: positionX / this.canvasDimensions.width,
+			cy: 0,
+			r: 2
+		});
+		radialGradient.create('stop').set({ offset: '10%', 'stop-color': color, 'stop-opacity': 0.4 });
+		radialGradient.create('stop').set({ offset: '50%', 'stop-color': color, 'stop-opacity': 0.05 });
+		// Create a rectangle with the gradient fill
+		const lightCanvas = this.svg.create('rect');
+		lightCanvas.set({
+			x: 0,
+			y: 0,
+			width: this.canvasDimensions.width,
+			height: this.canvasDimensions.height,
+			fill: 'url(#skyLightGradient)'
+		});
+
+		function animateLight() {
+			if (lightCanvas) {
+				let currentOpacity = parseFloat(lightCanvas.get('fill-opacity') || '0.6');
+				if (currentOpacity > 0) {
+					currentOpacity -= 0.02;
+					lightCanvas.set({ 'fill-opacity': currentOpacity });
+				} else {
+					radialGradient.delete();
+					lightCanvas.delete();
+					return;
+				}
+			}
+			requestAnimationFrame(animateLight);
+		}
+
+		animateLight();
 	}
 }
