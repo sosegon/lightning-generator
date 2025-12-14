@@ -1,4 +1,4 @@
-import type { MountainParams, MountainSvg } from '@types';
+import type { MountainParams } from '@types';
 import type { SvJs as SvJsType } from 'svjs';
 import { Gen } from 'svjs/src';
 import createDistortionFilter from './createDistortionFilter';
@@ -55,90 +55,50 @@ function createMountain(svg: SvJsType, params: MountainParams, filterUrl: string
 
 export default function paintMountains(
 	svg: SvJsType,
-	canvasDimensions: { width: number; height: number }
-) {
-	const { width: windowWidth, height: windowHeight } = canvasDimensions;
-	const mountainLayers: MountainParams[] = [
-		{
-			numberOfPeaks: 3,
-			distanceBetweenValleyPeak: 20,
-			color: '#0D0D2D',
-			valleyYPosition: windowHeight * 0.45,
-			speed: 0.01
-		}, // darkest, furthest
-		{
-			numberOfPeaks: 4,
-			distanceBetweenValleyPeak: 40,
-			color: '#1A1A38',
-			valleyYPosition: windowHeight * 0.45 + 25,
-			speed: 0.05
-		}, // mid
-		{
-			numberOfPeaks: 2,
-			distanceBetweenValleyPeak: 60,
-			color: '#262643',
-			valleyYPosition: windowHeight * 0.45 + 70,
-			speed: 0.1
-		} // closest, lightest
-	];
+	canvasDimensions: { width: number; height: number },
+	mountainsParams: MountainParams,
+	id: string
+): () => void {
+	// Filter to distort mountains
+	const turbulenceParams = {
+		baseFrequency: 0.005,
+		numOctaves: Gen.random(2, 5),
+		stitchTiles: 'stitch',
+		type: 'fractalNoise',
+		result: 'noise'
+	};
+	const displacementParams = {
+		in: 'SourceGraphic',
+		in2: 'noise',
+		scale: Gen.random(50, 100),
+		result: 'ray'
+	};
 
-	const MountainSvgs: MountainSvg[] = [];
-	for (let i = 0; i < mountainLayers.length; i++) {
-		const layer = mountainLayers[i];
+	createDistortionFilter(svg, `mountain-distortion-${id}`, turbulenceParams, displacementParams);
 
-		// Filter to distort mountains
-		const turbulenceParams = {
-			baseFrequency: 0.005,
-			numOctaves: Gen.random(2, 5),
-			stitchTiles: 'stitch',
-			type: 'fractalNoise',
-			result: 'noise'
-		};
-		const displacementParams = {
-			in: 'SourceGraphic',
-			in2: 'noise',
-			scale: Gen.random(50, 100),
-			result: 'ray'
-		};
-		createDistortionFilter(svg, `mountain-distortion-${i}`, turbulenceParams, displacementParams);
+	// Create 2 group of mountains to scroll even - odd - even - odd
+	const evenMountains = createMountain(svg, mountainsParams, `url(#mountain-distortion-${id})`);
+	const oddMountains = createMountain(svg, mountainsParams, `url(#mountain-distortion-${id})`);
+	evenMountains.set({ transform: `translate(0,0)` });
+	oddMountains.set({ transform: `translate(${canvasDimensions.width},0)` });
 
-		// Create 2 group of mountains to scroll even - odd - even - odd
-		const evenMountains = createMountain(svg, layer, `url(#mountain-distortion-${i})`);
-		const oddMountains = createMountain(svg, layer, `url(#mountain-distortion-${i})`);
-		evenMountains.set({ transform: `translate(0,0)` });
-		oddMountains.set({ transform: `translate(${windowWidth},0)` });
-		MountainSvgs.push({ evenMountains, oddMountains });
-	}
+	let evenX = 0;
+	let oddX = canvasDimensions.width;
 
-	// Animate for continuous scrolling
-	const positionsX: Array<{ evenX: number; oddX: number }> = [];
-	for (let i = 0; i < mountainLayers.length; i++) {
-		positionsX.push({ evenX: 0, oddX: windowWidth });
-	}
+	// Function to scroll mountains
+	return function () {
+		const speed = mountainsParams.speed;
+		evenX -= speed;
+		oddX -= speed;
 
-	function animateMountains() {
-		for (let i = 0; i < mountainLayers.length; i++) {
-			const layer = MountainSvgs[i];
-			const evenMountains = layer.evenMountains;
-			const oddMountains = layer.oddMountains;
-			const speed = mountainLayers[i].speed;
-
-			positionsX[i].evenX -= speed;
-			positionsX[i].oddX -= speed;
-
-			// When a group moves out of view, jump it to the right of the other group
-			if (positionsX[i].evenX <= -windowWidth) {
-				positionsX[i].evenX = positionsX[i].oddX + windowWidth;
-			}
-			if (positionsX[i].oddX <= -windowWidth) {
-				positionsX[i].oddX = positionsX[i].evenX + windowWidth;
-			}
-
-			evenMountains?.set({ transform: `translate(${positionsX[i].evenX},0)` });
-			oddMountains?.set({ transform: `translate(${positionsX[i].oddX},0)` });
+		// When a group moves out of view, jump it to the right of the other group
+		if (evenX <= -canvasDimensions.width) {
+			evenX = oddX + canvasDimensions.width;
 		}
-		requestAnimationFrame(animateMountains);
-	}
-
-	animateMountains();
+		if (oddX <= -canvasDimensions.width) {
+			oddX = evenX + canvasDimensions.width;
+		}
+		evenMountains?.set({ transform: `translate(${evenX},0)` });
+		oddMountains?.set({ transform: `translate(${oddX},0)` });
+	};
 }

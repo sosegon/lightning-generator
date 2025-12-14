@@ -5,6 +5,7 @@ import paintMountains from './paintMountains';
 import paintStars from './paintStars';
 import paintSky from './paintSky';
 import { Bolt } from './Bolt';
+import landscapeConfig from './landscapeConfig';
 
 export class Landscape {
 	private svg: SvJsType;
@@ -52,8 +53,32 @@ export class Landscape {
 			paintStars(this.svg, { width: viewBoxWidth, height: viewBoxHeight }, 100);
 		}
 
+		let animationFns: Array<() => void> = [];
 		if (shouldPaint.mountains) {
-			paintMountains(this.svg, { width: viewBoxWidth, height: viewBoxHeight });
+			const scrollFarMountains = paintMountains(
+				this.svg,
+				{ width: viewBoxWidth, height: viewBoxHeight },
+				{ ...landscapeConfig.farMountainsParams, valleyYPosition: viewBoxHeight * 0.45 },
+				'far-mountains'
+			);
+			animationFns.push(scrollFarMountains);
+			const scrollMidMountains = paintMountains(
+				this.svg,
+				{ width: viewBoxWidth, height: viewBoxHeight },
+				{ ...landscapeConfig.midMountainsParams, valleyYPosition: viewBoxHeight * 0.45 + 100 },
+				'mid-mountains'
+			);
+			animationFns.push(scrollMidMountains);
+			const scrollNearMountains = paintMountains(
+				this.svg,
+				{ width: viewBoxWidth, height: viewBoxHeight },
+				{
+					...landscapeConfig.nearMountainsParams,
+					valleyYPosition: viewBoxHeight * 0.45 + 270
+				},
+				'near-mountains'
+			);
+			animationFns.push(scrollNearMountains);
 		}
 
 		this.bolt = new Bolt(
@@ -96,5 +121,11 @@ export class Landscape {
 
 			this.bolt.paint(endPoint.x, branchParams, 3, boltColor);
 		});
+
+		function animate() {
+			animationFns.forEach((fn) => fn());
+			requestAnimationFrame(animate);
+		}
+		animate();
 	}
 }

@@ -22,7 +22,7 @@ export type MountainParams = {
 	numberOfPeaks: number;
 	distanceBetweenValleyPeak: number;
 	color: string;
-	valleyYPosition: number;
+	valleyYPosition: number | null;
 	speed: number;
 };
 
