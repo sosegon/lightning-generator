@@ -49,11 +49,11 @@ export class Landscape {
 		}
 
 		if (shouldPaint.stars) {
-			paintStars(this.svg, 100);
+			paintStars(this.svg, { width: viewBoxWidth, height: viewBoxHeight }, 100);
 		}
 
 		if (shouldPaint.mountains) {
-			paintMountains(this.svg);
+			paintMountains(this.svg, { width: viewBoxWidth, height: viewBoxHeight });
 		}
 
 		this.bolt = new Bolt(

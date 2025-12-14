@@ -53,8 +53,11 @@ function createMountain(svg: SvJsType, params: MountainParams, filterUrl: string
 	return group;
 }
 
-export default function paintMountains(svg: SvJsType) {
-	const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+export default function paintMountains(
+	svg: SvJsType,
+	canvasDimensions: { width: number; height: number }
+) {
+	const { width: windowWidth, height: windowHeight } = canvasDimensions;
 	const mountainLayers: MountainParams[] = [
 		{
 			numberOfPeaks: 3,

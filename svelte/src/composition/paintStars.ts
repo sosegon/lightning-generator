@@ -1,8 +1,12 @@
 import { Gen } from 'svjs/src';
 import type { SvJs as SvJsType } from 'svjs';
 
-export default function paintStars(svg: SvJsType, count: number) {
-	const { innerWidth: width, innerHeight: height } = window;
+export default function paintStars(
+	svg: SvJsType,
+	canvasDimensions: { width: number; height: number },
+	count: number
+) {
+	const { width, height } = canvasDimensions;
 	for (let i = 0; i < count; i++) {
 		svg.create('circle').set({
 			cx: Gen.random(0, width),
