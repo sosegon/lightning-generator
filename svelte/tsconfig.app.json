@@ -19,7 +19,8 @@
 		"paths": {
 			"@root/*": ["src/*"],
 			"@lib/*": ["src/lib/*"],
-			"@types/*": ["src/types/*"]
+			"@types/*": ["src/types/*"],
+			"@composition/*": ["src/composition/*"]
 		},
 		"composite": true
 	},

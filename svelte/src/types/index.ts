@@ -22,11 +22,12 @@ export type MountainParams = {
 	numberOfPeaks: number;
 	distanceBetweenValleyPeak: number;
 	color: string;
-	valleyYPosition: number;
+	valleyYPosition: number | null;
 	speed: number;
+	segments: number;
 };
 
-export type SvgMountain = {
+export type MountainSvg = {
 	oddMountains: SvJsType | null;
 	evenMountains: SvJsType | null;
 };
