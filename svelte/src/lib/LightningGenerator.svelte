@@ -27,6 +27,9 @@
 		const showInstructions = () => {
 			appState.setShowInstructions(true);
 		};
+		const hideInstructions = () => {
+			appState.setShowInstructions(false);
+		};
 
 		const playThunderSound = () => {
 			if (!appState.isMuted) {
@@ -47,8 +50,11 @@
 				boltGlow: lightningState.color
 			},
 			{ sky: true, stars: true, mountains: true },
-			showInstructions,
 			() => {
+				showInstructions();
+			},
+			() => {
+				hideInstructions();
 				playThunderSound();
 				return lightningState.color;
 			}
