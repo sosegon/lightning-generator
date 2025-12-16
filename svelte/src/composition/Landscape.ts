@@ -58,14 +58,14 @@ export class Landscape {
 			const scrollFarMountains = paintMountains(
 				this.svg,
 				{ width: viewBoxWidth, height: viewBoxHeight },
-				{ ...landscapeConfig.farMountainsParams, valleyYPosition: viewBoxHeight * 0.45 },
+				{ ...landscapeConfig.farMountainsParams, valleyYPosition: viewBoxHeight * 1 - 150 },
 				'far-mountains'
 			);
 			animationFns.push(scrollFarMountains);
 			const scrollMidMountains = paintMountains(
 				this.svg,
 				{ width: viewBoxWidth, height: viewBoxHeight },
-				{ ...landscapeConfig.midMountainsParams, valleyYPosition: viewBoxHeight * 0.45 + 100 },
+				{ ...landscapeConfig.midMountainsParams, valleyYPosition: viewBoxHeight * 1 - 90 },
 				'mid-mountains'
 			);
 			animationFns.push(scrollMidMountains);
@@ -74,7 +74,7 @@ export class Landscape {
 				{ width: viewBoxWidth, height: viewBoxHeight },
 				{
 					...landscapeConfig.nearMountainsParams,
-					valleyYPosition: viewBoxHeight * 0.45 + 270
+					valleyYPosition: viewBoxHeight * 1 - 30
 				},
 				'near-mountains'
 			);

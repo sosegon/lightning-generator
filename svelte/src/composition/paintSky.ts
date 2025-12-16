@@ -23,7 +23,7 @@ export default function paintSky(
 		'stop-opacity': 1
 	});
 	bgGradient.create('stop').set({
-		offset: '50%',
+		offset: '80%',
 		'stop-color': colors.gradientEnd, // lighter shade at the bottom
 		'stop-opacity': 1
 	});

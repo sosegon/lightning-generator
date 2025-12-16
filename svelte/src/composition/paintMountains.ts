@@ -1,30 +1,39 @@
 import type { MountainParams } from '@types';
 import type { SvJs as SvJsType } from 'svjs';
 import { Gen } from 'svjs/src';
+import { createNoise2D } from 'simplex-noise';
 import createDistortionFilter from './createDistortionFilter';
 
-function createMountain(svg: SvJsType, params: MountainParams, filterUrl: string = ''): SvJsType {
+function createMountain(
+	svg: SvJsType,
+	params: MountainParams,
+	canvasDimensions: { width: number; height: number }
+): SvJsType {
+	const noise = createNoise2D();
 	const points: Array<[number, number]> = [];
+	const waveStep = canvasDimensions.width / params.segments;
+	let d = '';
+	for (let i = 0; i <= params.segments; i++) {
+		const x = i * waveStep;
+		const noiseValue = noise(x * 0.005, 0);
+		let y =
+			noiseValue *
+			params.distanceBetweenValleyPeak *
+			Math.sin(x * ((2 * Math.PI) / canvasDimensions.width) * params.numberOfPeaks);
+		y = y + params.valleyYPosition - params.distanceBetweenValleyPeak / 2;
 
-	const { numberOfPeaks, valleyYPosition, distanceBetweenValleyPeak, color } = params;
+		// add jagginess
+		const jaggedness = (noise(x * 0.05, 100) + 1) / 2; // normalize to [0,1]
+		y += (jaggedness - 0.5) * 8;
 
-	const dh = distanceBetweenValleyPeak; // vertical distance between peaks
-	const vh = window.innerHeight;
-	const y2 = valleyYPosition; // valley y position
-	const y1 = y2 - dh; // peak y position
-	const w = window.innerWidth / (numberOfPeaks * 2); // horizontal distance between peaks and valleys
+		points.push([x, y]);
 
-	let x = 0;
-	for (let i = 0; i < 2 * numberOfPeaks + 1; i++) {
-		const px = x;
-		const py = i % 2 !== 0 ? y1 : y2;
-		points.push([px, py]);
-		x += w;
+		d += i === 0 ? `M${x},${y}` : ` L ${x} ${y}`;
 	}
 
 	const closingPoints = [
-		[points[points.length - 1][0], points[points.length - 1][1] + vh],
-		[points[0][0], points[0][1] + vh]
+		[points[points.length - 1][0], points[points.length - 1][1] + canvasDimensions.height],
+		[points[0][0], points[0][1] + canvasDimensions.height]
 	];
 
 	let closingD = '';
@@ -33,21 +42,11 @@ function createMountain(svg: SvJsType, params: MountainParams, filterUrl: string
 	}
 
 	const group = svg.create('g');
-	const mountainShape = group.createCurve(points, 1);
+	const mountainShape = group.create('path');
 	mountainShape.set({
-		fill: color,
-		d: mountainShape.element.getAttribute('d') + closingD,
-		stroke: 'none',
-		filter: filterUrl
-	});
-
-	const mountainFiller = group.create('rect');
-	mountainFiller.set({
-		x: 0,
-		y: valleyYPosition * 1.01, // Going slightly below to avoid gaps due to application of filters
-		width: window.innerWidth,
-		height: vh - valleyYPosition,
-		fill: color
+		fill: params.color,
+		d: d + closingD,
+		stroke: 'none'
 	});
 
 	return group;
@@ -77,8 +76,8 @@ export default function paintMountains(
 	createDistortionFilter(svg, `mountain-distortion-${id}`, turbulenceParams, displacementParams);
 
 	// Create 2 group of mountains to scroll even - odd - even - odd
-	const evenMountains = createMountain(svg, mountainsParams, `url(#mountain-distortion-${id})`);
-	const oddMountains = createMountain(svg, mountainsParams, `url(#mountain-distortion-${id})`);
+	const evenMountains = createMountain(svg, mountainsParams, canvasDimensions);
+	const oddMountains = createMountain(svg, mountainsParams, canvasDimensions);
 	evenMountains.set({ transform: `translate(0,0)` });
 	oddMountains.set({ transform: `translate(${canvasDimensions.width},0)` });
 

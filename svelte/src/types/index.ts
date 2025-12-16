@@ -24,6 +24,7 @@ export type MountainParams = {
 	color: string;
 	valleyYPosition: number | null;
 	speed: number;
+	segments: number;
 };
 
 export type MountainSvg = {
