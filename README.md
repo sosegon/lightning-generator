@@ -10,16 +10,18 @@ A lightning bolt can be seen as the root of a plant. At a first glance, there is
 
 Also, each branch seems to follow a semi-chaotic path, it is difficult to see where each one goes, but they have a clear direction: down to soil.
 
-With these ideas, it is time to define the algorithm. 
+With these ideas, it is time to define the algorithm.
 
 ### The algorithm
 
-1. Define a (vertical) line 
+1. Define a (vertical) line
 2. Find the `n - 1` points to evenly divide the line in `n` segments
 3. From each of those `n - 1` points start a new line with three characteristics:
-  - Smaller length (a fraction of the main line)
-  - Tilted to the main line
-  - Alternating sides (left - right - left)
+
+- Smaller length (a fraction of the main line)
+- Tilted to the main line
+- Alternating sides (left - right - left)
+
 4. Start over the process for each new line
 
 The result is seen below
@@ -52,8 +54,9 @@ Since the lightning bolt has to be rendered from top to down, some branches may 
 
 ### Future work (TODO)
 
-- Add thunder sound effect 
+- ~~Add thunder sound effect~~
+- ~~Add sky~~
+- ~~Add landscape~~
+- ~~Add UI controls to change lightning parameters~~
 - Add clouds
-- Add landscape
-- Add UI controls to change lightning parameters
 - Improve logic to make the directions of branches more diverse.
