@@ -1,4 +1,4 @@
-import type { MountainParams } from 'Types';
+import type { MountainParams } from '@types';
 
 // Mountains
 const farMountainsParams: MountainParams = {

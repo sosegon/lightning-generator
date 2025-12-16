@@ -1,5 +1,4 @@
-import type { BranchDom } from '@root/types';
-import type { BranchParams } from '@types';
+import type { BranchDom, BranchParams } from '@types';
 import { Gen } from 'svjs/src';
 import type { SvJs as SvJsType } from 'svjs';
 import createDistortionFilter from './createDistortionFilter';
@@ -191,7 +190,7 @@ export class Bolt {
 		// lines. It creates the look of a natural lightning bolt
 		createDistortionFilter(this.svg, this.rayInnerFilterName, turbulenceParams, displacementParams);
 
-		// Filter in the outter part of the bolt. It distorts and blurs
+		// Filter in the outer part of the bolt. It distorts and blurs
 		// the glow of the bolt to create the feel of a glowing lightning
 		// bolt
 		const filterOut = createDistortionFilter(

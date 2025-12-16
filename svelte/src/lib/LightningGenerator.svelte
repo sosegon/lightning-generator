@@ -53,8 +53,6 @@
 				return lightningState.color;
 			}
 		);
-
-		return;
 	}
 </script>
 

@@ -25,7 +25,7 @@ export class Landscape {
 			mountains: boolean;
 		} = { sky: true, stars: true, mountains: true },
 		onMouseLeave: () => void = () => {},
-		onPointerDown: () => void = () => {}
+		onPointerDown: () => string = () => ''
 	) {
 		if (!container) {
 			throw new Error('Container element is required to create Landscape');
